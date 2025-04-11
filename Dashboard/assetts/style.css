@@ -1,0 +1,45 @@
+.stApp {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.metric-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #004080;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+div[data-testid="stMetricValue"] {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.stDataFrame {
+  font-size: 14px;
+}
+
+.plot-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+h1 {
+  color: #004080;
+  padding: -20px 0;
+  margin-bottom: 30px;
+  text-align: left;
+}
