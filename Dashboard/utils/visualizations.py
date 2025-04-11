@@ -1,3 +1,6 @@
+import plotly.graph_objects as go
+import plotly.express as px
+
 def create_gauge_chart(actual, expected, year):
     '''
     Create a gauge chart comparing actual vs expected salary spend

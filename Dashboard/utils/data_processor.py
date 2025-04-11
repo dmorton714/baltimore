@@ -1,24 +1,25 @@
 import pandas as pd
+import re
 
 
 def process_salary_data(sal):
-    # convert HireDate to datetime
-    sal['HireDate'] = pd.to_datetime(sal['HireDate'], unit='ms')
-    # sal['HireDate'] = sal['HireDate'].dt.strftime('%m%d%Y')
+    # Convert HireDate to datetime
+    sal['HireDate'] = pd.to_datetime(sal['HireDate'], errors='coerce')
 
-    # clean FiscalYear
-    sal['FiscalYear'] = sal['FiscalYear'].str.replace('^FY', '', regex=True)
+    # Clean FiscalYear (ensure it is treated as a string)
+    sal['FiscalYear'] = sal['FiscalYear'].astype(str).str.replace('^FY', '', regex=True)
 
-    # drop rows with missing values in GrossPay
+    # Drop rows with missing values in GrossPay
     sal = sal.dropna(subset=['GrossPay'])
 
-    # removes the trailing number in parentheses from AgencyName
-    sal['AgencyName'] = sal['AgencyName'].str.replace(
-        r'\s\(\d+\)', '', regex=True)
+    # Ensure AgencyName is a string and remove trailing numbers in parentheses
+    sal['AgencyName'] = sal['AgencyName'].fillna('').astype(str)
+    sal['AgencyName'] = sal['AgencyName'].str.replace(r'\s\(\d+\)', '', regex=True)
 
-    # strip spaces
-    sal[sal.select_dtypes('object').columns] = sal[sal.select_dtypes(
-        'object').columns].apply(lambda x: x.str.strip())
+    # Strip spaces for object columns (make sure they are string type)
+    sal[sal.select_dtypes('object').columns] = sal[sal.select_dtypes('object').columns].apply(
+        lambda x: x.fillna('').astype(str).str.strip()  # Ensure NaN values are filled and then strip spaces
+    )
 
     # List of words to replace
     replace_dict = {
@@ -44,6 +45,12 @@ def process_salary_data(sal):
     # Remove rows where GrossPay is NaN or 0
     sal = sal[sal['GrossPay'].notna() & (sal['GrossPay'] != 0)]
 
+    # >>> Filter out GrossPay < 30000
+    sal = sal[sal['GrossPay'] >= 30000]
+
+    # >>> Filter out GrossPay < 30000
+    sal = sal[sal['AnnualSalary'] >= 30000]
+
     # Discrepancy in amount
     sal['Pay_Discrepancy'] = sal['GrossPay'] - sal['AnnualSalary']
 
@@ -63,23 +70,33 @@ def get_metrics(data, year):
     total_budget = year_data['AnnualSalary'].sum()
     variance_pct = ((total_spend - total_budget) / total_budget) * 100 if total_budget != 0 else 0
 
+    # Calculate the individual values you want to display
+    gross_pay = total_spend
+    annual_salary = total_budget
+    pay_discrepancy_pct = variance_pct  # Use your existing logic or calculation if needed
+
     return {
+        'GrossPay': gross_pay,
+        'AnnualSalary': annual_salary,
+        'Pay_Discrepancy_Pct': pay_discrepancy_pct,
         'total_spend': round(total_spend, 2),
         'total_budget': round(total_budget, 2),
         'variance_pct': round(variance_pct, 2)
     }
 
 
-def get_top_deviations(data, year, limit=10):
+def get_top_deviations(data, year, limit=20):
     '''
     Get top salary deviations
     '''
     year_data = data[data['FiscalYear'] == str(year)].copy()
-    budget = year_data['AnnualSalary']
-    year_data['Deviation'] = year_data['GrossPay'] - budget
-    year_data['Deviation_Pct'] = (year_data['Deviation'] / budget * 100).round(2)
-    year_data['AnnualSalary'] = year_data['AnnualSalary'].round(2)
 
-    return year_data.nlargest(limit, 'Deviation_Pct')[
-        ['EmployeeName', 'Department', 'GrossPay', 'AnnualSalary', 'Deviation', 'Deviation_Pct']
+    # Round for cleaner display
+    year_data['GrossPay'] = year_data['GrossPay'].round(2)
+    year_data['AnnualSalary'] = year_data['AnnualSalary'].round(2)
+    year_data['Pay_Discrepancy'] = year_data['Pay_Discrepancy'].round(2)
+    year_data['Pay_Discrepancy_Pct'] = year_data['Pay_Discrepancy_Pct'].round(2)
+
+    return year_data.nlargest(limit, 'Pay_Discrepancy_Pct')[
+        ['Name', 'AgencyName', 'GrossPay', 'AnnualSalary', 'Pay_Discrepancy', 'Pay_Discrepancy_Pct']
     ]

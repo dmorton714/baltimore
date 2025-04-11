@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+import plotly.graph_objects as go
 from utils.data_processor import process_salary_data, get_metrics, get_top_deviations
-from utils.visualizations import create_gauge_chart, create_AgencyName_comparison
+from utils.visualizations import create_gauge_chart, create_department_comparison
 
 # Page config
 st.set_page_config(
-    page_title="Louisville Metro Salary Tracker",
-    page_icon="LMG",
+    page_title="Baltimore Salary Tracker",
+    page_icon="Baltimore City",
     layout="wide"
 )
 
@@ -24,27 +24,33 @@ with col1:
 @st.cache_data
 def load_data():
     data = pd.read_csv("data/salary_cleaned.csv")
-    return process_salary_data(data, datetime.now().strftime("%B %d, %Y"))
+    return process_salary_data(data)
+
 
 try:
     data = load_data()
-    
-    # Filters
+
+    # Filters - Year first
     col1, col2 = st.columns(2)
     with col1:
         selected_year = st.selectbox(
             "Select Year",
             options=sorted(data['FiscalYear'].unique()),
-            index=len(data['FiscalYear'].unique())-1
+            index=len(data['FiscalYear'].unique()) - 1
         )
+
+    # Filter data for that year to get relevant departments
+    year_filtered_data = data[data['FiscalYear'] == selected_year]
+    available_departments = sorted(year_filtered_data['AgencyName'].unique().tolist())
+
     with col2:
         selected_dept = st.selectbox(
             "Select AgencyName",
-            options=['All'] + sorted(data['AgencyName'].unique().tolist())
+            options=['All'] + available_departments
         )
 
-    # Filter data based on selections
-    filtered_data = data[data['FiscalYear'] == selected_year]
+    # Final filtering
+    filtered_data = year_filtered_data
     if selected_dept != 'All':
         filtered_data = filtered_data[filtered_data['AgencyName'] == selected_dept]
 
@@ -73,7 +79,7 @@ try:
         )
     with col2:
         st.plotly_chart(
-            create_AgencyName_comparison(filtered_data, selected_year),
+            create_department_comparison(filtered_data, selected_year),
             use_container_width=True
         )
 
