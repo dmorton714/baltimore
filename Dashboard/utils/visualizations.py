@@ -51,6 +51,7 @@ def create_department_comparison(data, year):
     }).reset_index()
 
     dept_data['Variance_Pct'] = ((dept_data['GrossPay'] - dept_data['AnnualSalary']) / dept_data['AnnualSalary']) * 100
+    dept_data['Variance_Pct'] = dept_data['Variance_Pct'].round(2)
 
     fig = px.bar(dept_data.sort_values('Variance_Pct'),
                  y='AgencyName',
