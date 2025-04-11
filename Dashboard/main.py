@@ -23,7 +23,7 @@ with col1:
 # Load and process data
 @st.cache_data
 def load_data():
-    data = pd.read_csv("data/salary_cleaned.csv")
+    data = pd.read_csv('data/salary_cleaned.csv.zip', compression='zip')
     return process_salary_data(data)
 
 
