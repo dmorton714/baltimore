@@ -1,5 +1,40 @@
-# baltimore
+# Baltimore
 
+### Future Improvements 
+While the dashboard began as a public-facing prototype, it has since transitioned into a contracted project. As a result, further developments and findings are part of a private engagement and are not included in this repository.
+
+## Baltimore Salary Dashboard
+An interactive Streamlit dashboard designed to analyze departmental salary spending across Baltimore City. This tool highlights significant deviations in salary data to identify potentially troubled departments. Supporting data-driven decision-making for a political candidates and public stakeholders.
+
+## Project Purpose
+This dashboard was built to:
+- Visualize department-level salary trends across Baltimore
+- Detect outliers and anomalies in salary distributions
+- Provide transparency into city payroll spending
+- Help a political candidate target departments for further review based on fiscal irregularities
+
+## Features
+- Interactive Filtering by department, year, and salary range
+- Salary Deviation Detection to highlight unusually high or low spending
+- Departmental Summaries with key metrics 
+- Visualizations including bar charts, gauge plots, and deviation tables
+- Streamlit Interface for ease of use and real-time exploration
+
+## Tech Stack
+- Python – Core language
+- Streamlit – Web dashboard framework
+- Pandas – Data manipulation
+- Plotly – Interactive and statistical visualizations
+- NumPy – Numerical operations
+- Git – Version control
+
+📁 Data
+The data used includes:
+- Baltimore City departmental salary reports
+- Staff-level records including department, role, and pay
+- Publicly available sources 
+
+Note: All data is derived from public records.
 
 | data | url |
 | --- | --- |
@@ -12,14 +47,17 @@
 | tickets 9.5mill | https://data.baltimorecity.gov/datasets/d2a2330d6a374ad39a24a0d7f7b58f19_0/explore | 
 
 
+## Getting Started
+To run this project locally:
+
 ###  Virutal Environment Instructions
 
 1. After you have cloned the repo to your machine, navigate to the project 
 folder in GitBash/Terminal.
-1. Create a virtual environment in the project folder. 
-1. Activate the virtual environment.
-1. Install the required packages. 
-1. When you are done working on your repo, deactivate the virtual environment.
+- Create a virtual environment in the project folder. 
+- Activate the virtual environment.
+- Install the required packages. 
+- When you are done working on your repo, deactivate the virtual environment.
 
 ### Virtual Environment Commands
 | Command | Linux/Mac | GitBash |
@@ -28,5 +66,15 @@ folder in GitBash/Terminal.
 | Activate | `source venv/bin/activate` | `source venv/Scripts/activate` |
 | Install | `pip install -r requirements.txt` | `pip install -r requirements.txt` |
 | Deactivate | `deactivate` | `deactivate` |
+
+2. 
+```bash
+git clone https://github.com/your-username/baltimore-salary-dashboard.git
+cd baltimore-salary-dashboard
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+
 
 
